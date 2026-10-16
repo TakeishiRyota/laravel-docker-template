@@ -8,16 +8,41 @@ use App\Todo;
 
 class TodoController extends Controller
 {
+    //一覧表示処理
     public function index()
     {
         $todo = new Todo();
+        //全件取得内容を代入
         $todos = $todo->all();
 
+        //一覧画面を取得結果とともに返却
         return view('todo.index', ['todos' => $todos]);
     }
 
+    //新規作成画面表示
     public function create()
     {
+        //新規作成を返却
         return view('todo.create');
     }
+
+    //新規追加処理
+    public function store(Request $request) 
+    {
+        //リクエストに含まれるフォームの入力内容を変数に代入
+        $content = $request->input('content');
+
+        //  1. todosテーブルの1レコードを表すTodoクラスをインスタンス化
+        $todo = new Todo(); 
+        // 2. Todoインスタンスのカラム名のプロパティに保存したい値を代入
+        $todo->content = $content;
+        // 3. Todoインスタンスの`->save()`を実行してオブジェクトの状態をDBに保存するINSERT文を実行
+        $todo->save();
+
+        //一覧画面にリダイレクト
+        return redirect()->route('todo.index'); 
+
+    }
+
+
 }
